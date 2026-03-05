@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
-public class Car : MonoBehaviour
+public class Player : MonoBehaviour
 {
     public Rigidbody body;
     public WheelCollider frontRightWheel, frontLeftWheel, rearRightWheel, rearLeftWheel;
     public float driveSpeed, steerSpeed, speedLimit, brakeSpeed;
+    private int health;
+    public TextMeshProUGUI healthText;
 
     InputAction moveAction;
     InputAction brakeInput;
@@ -15,6 +18,8 @@ public class Car : MonoBehaviour
     {
         moveAction = InputSystem.actions.FindAction("Move");
         brakeInput = InputSystem.actions.FindAction("Crouch");
+        health = 10;
+        setHealthText();
     }
 
     void Update()
@@ -63,5 +68,20 @@ public class Car : MonoBehaviour
 
         frontRightWheel.steerAngle = steerSpeed * steerInput;
         frontLeftWheel.steerAngle = steerSpeed * steerInput;
+    }
+
+    private void OnCollisionEnter(Collision collision){
+        if(collision.gameObject.CompareTag("enemy")){
+            health--;
+            setHealthText();
+        }
+        
+    }
+
+    private void setHealthText(){
+        healthText.text = "Health: " + health.ToString();
+        if(health <= 0){
+            Destroy(gameObject);
+        }
     }
 }
