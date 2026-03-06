@@ -75,6 +75,11 @@ public class Player : MonoBehaviour
             health--;
             setHealthText();
         }
+
+        if(collision.gameObject.CompareTag("Vehicle")){
+            health-=5;
+            setHealthText();
+        }
         
     }
 
