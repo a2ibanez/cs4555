@@ -18,4 +18,18 @@ public class EnemyMovement : MonoBehaviour
             agent.SetDestination(player.position);
         }
     }
+
+    private void OnCollisionEnter(Collision collision){
+        if(collision.gameObject.CompareTag("player")){
+            print("hit");
+            agent.isStopped = true;
+        }
+        
+    }
+
+    private void OnCollisionExit(Collision collision){
+        if(collision.gameObject.CompareTag("player")){
+            agent.isStopped = false;
+        }
+    }
 }
