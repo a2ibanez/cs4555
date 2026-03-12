@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - enemy
+  - Vehicle
   layers:
   - Default
   - TransparentFX
