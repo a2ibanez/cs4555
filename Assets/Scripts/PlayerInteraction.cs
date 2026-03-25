@@ -14,6 +14,8 @@ public class PlayerInteraction : MonoBehaviour
     private InputAction pickUpAction;
     private InputAction dropAction;
 
+    public NavigationManager navigationManager;
+
     void Awake()
     {
         // Create actions manually (no asset needed)
@@ -62,6 +64,7 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         pickUpPrompt.SetActive(false);
+        navigationManager.ClearPackageTarget(currentPackage);
     }
 
     void DropPackage()
@@ -73,7 +76,8 @@ public class PlayerInteraction : MonoBehaviour
         if (rb != null)        {
             rb.isKinematic = false;
         }
-        
+
+        navigationManager.SetPackageTarget(currentPackage);
         currentPackage = null;
     }
 
@@ -83,6 +87,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             nearbyPackage = other.gameObject;
             pickUpPrompt.SetActive(true);
+            navigationManager.SetPackageTarget(other.gameObject);
         }
     }
 
