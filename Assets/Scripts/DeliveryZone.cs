@@ -18,6 +18,8 @@ public class DeliveryZone : MonoBehaviour
 
             deliveredCount++; // increment the delivered count
 
+            GameManager.instance.CheckWin(deliveredCount);
+
             Debug.Log("Package delivered! Total delivered: " + deliveredCount);
         }
     }
