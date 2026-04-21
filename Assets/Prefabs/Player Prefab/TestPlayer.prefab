@@ -147,7 +147,7 @@ WheelCollider:
   m_GameObject: {fileID: 1179741120821018114}
   serializedVersion: 2
   m_Center: {x: 0, y: 0.15, z: 0}
-  m_Radius: 0.2
+  m_Radius: 0.24
   m_SuspensionSpring:
     spring: 35000
     damper: 4500
@@ -218,7 +218,7 @@ WheelCollider:
   m_GameObject: {fileID: 2632216681010367377}
   serializedVersion: 2
   m_Center: {x: 0, y: 0.15, z: 0}
-  m_Radius: 0.2
+  m_Radius: 0.24
   m_SuspensionSpring:
     spring: 35000
     damper: 4500
@@ -361,8 +361,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.32, y: 0.78, z: 1.06}
+  m_Center: {x: -0.18, y: 0.43, z: 0}
 --- !u!54 &4165131674240581624
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -657,7 +657,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5d7c088409d9a40b7b09aa707777f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineOrbitalFollow
-  TargetOffset: {x: 0, y: 0, z: 0}
+  TargetOffset: {x: 0, y: 1.2, z: 0}
   TrackerSettings:
     BindingMode: 4
     PositionDamping: {x: 1, y: 1, z: 1}
@@ -665,17 +665,17 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   OrbitStyle: 0
-  Radius: 5
+  Radius: 10
   Orbits:
     Top:
-      Radius: 2
-      Height: 5
+      Radius: 8
+      Height: 6
     Center:
-      Radius: 4
-      Height: 2.25
+      Radius: 9
+      Height: 3.5
     Bottom:
-      Radius: 2.5
-      Height: 0.1
+      Radius: 8
+      Height: 2
     SplineCurvature: 0.5
   RecenteringTarget: 2
   HorizontalAxis:
@@ -690,7 +690,7 @@ MonoBehaviour:
     Restrictions: 0
   VerticalAxis:
     Value: 27.954365
-    Center: 17.5
+    Center: 25
     Range: {x: 0, y: 45}
     Wrap: 0
     Recentering:
@@ -730,7 +730,7 @@ MonoBehaviour:
       Size: {x: 0.8, y: 0.8}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
-  TargetOffset: {x: 0, y: 0, z: 0}
+  TargetOffset: {x: 0, y: 0.75, z: 0}
   Damping: {x: 0.5, y: 0.5}
   Lookahead:
     Enabled: 0
@@ -1007,7 +1007,7 @@ WheelCollider:
   m_GameObject: {fileID: 7062049365198261998}
   serializedVersion: 2
   m_Center: {x: 0, y: 0.15, z: 0}
-  m_Radius: 0.2
+  m_Radius: 0.24
   m_SuspensionSpring:
     spring: 35000
     damper: 4500
@@ -1168,7 +1168,7 @@ WheelCollider:
   m_GameObject: {fileID: 8344574772169639591}
   serializedVersion: 2
   m_Center: {x: 0, y: 0.15, z: 0}
-  m_Radius: 0.2
+  m_Radius: 0.24
   m_SuspensionSpring:
     spring: 35000
     damper: 4500

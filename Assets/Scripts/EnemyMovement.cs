@@ -4,8 +4,10 @@ using UnityEngine.AI;
 public class EnemyMovement : MonoBehaviour
 {
     public Transform player;
+    public float chaseRadius = 8f;
     private NavMeshAgent agent;
     private Animator animator;
+    private bool isTouchingPlayer;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,23 +21,34 @@ public class EnemyMovement : MonoBehaviour
     void Update()
     {
         if (player != null)
-    {
-        agent.SetDestination(player.position);
-
-        
-        Vector3 direction = player.position - transform.position;
-        direction.y = 0f;
-
-        if (direction != Vector3.zero)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                lookRotation,
-                10f * Time.deltaTime
-            );
+            Vector3 direction = player.position - transform.position;
+            direction.y = 0f;
+
+            bool playerInChaseRange = direction.magnitude <= chaseRadius;
+            bool shouldChase = playerInChaseRange && !isTouchingPlayer;
+
+            agent.isStopped = !shouldChase;
+
+            if (shouldChase)
+            {
+                agent.SetDestination(player.position);
+
+                if (direction != Vector3.zero)
+                {
+                    Quaternion lookRotation = Quaternion.LookRotation(direction);
+                    transform.rotation = Quaternion.Slerp(
+                        transform.rotation,
+                        lookRotation,
+                        10f * Time.deltaTime
+                    );
+                }
+            }
+            else
+            {
+                agent.ResetPath();
+            }
         }
-    }
 
     bool isMoving = !agent.isStopped
         && agent.velocity.magnitude > 0.1f
@@ -48,6 +61,7 @@ public class EnemyMovement : MonoBehaviour
     private void OnCollisionEnter(Collision collision){
         if(collision.gameObject.CompareTag("player")){
             print("hit");
+            isTouchingPlayer = true;
             agent.isStopped = true;
             animator.SetBool("isRunning", false);
         }
@@ -56,7 +70,14 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnCollisionExit(Collision collision){
         if(collision.gameObject.CompareTag("player")){
+            isTouchingPlayer = false;
             agent.isStopped = false;
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, chaseRadius);
     }
 }

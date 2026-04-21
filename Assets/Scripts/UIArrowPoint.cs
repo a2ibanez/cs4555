@@ -4,6 +4,7 @@ using TMPro;
 public class UIArrowPoint : MonoBehaviour
 {
     public Transform player;
+    public Transform cameraTransform;
     public NavigationManager navigationManager;
     public TMPro.TextMeshProUGUI distanceText;
 
@@ -14,6 +15,7 @@ public class UIArrowPoint : MonoBehaviour
         if (navigationManager.currentTarget == null)
         {
             distanceText.text = "";
+            return;
         }
 
         Vector3 direction = navigationManager.currentTarget.position - player.position;
@@ -22,10 +24,16 @@ public class UIArrowPoint : MonoBehaviour
         float distance = direction.magnitude;
         distanceText.text = Mathf.Round(distance) + "m";
 
-        Vector3 playerForward = player.forward;
-        playerForward.y = 0f;
+        Transform directionReference = cameraTransform != null ? cameraTransform : Camera.main?.transform;
+        if (directionReference == null)
+        {
+            return;
+        }
 
-        float signedAngle = Vector3.SignedAngle(playerForward, direction, Vector3.up);
+        Vector3 cameraForward = directionReference.forward;
+        cameraForward.y = 0f;
+
+        float signedAngle = Vector3.SignedAngle(cameraForward, direction, Vector3.up);
 
         transform.localRotation = Quaternion.Euler(0f, 0f, -signedAngle + 180f);
     }

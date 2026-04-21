@@ -6,12 +6,30 @@ public class Wheel : MonoBehaviour
     public Transform wheelMesh;
     public bool wheelTurn;
 
-    // Update is called once per frame
-    void Update()
+    private Quaternion startingLocalRotation;
+
+    private void Start()
     {
-        if(wheelTurn){
-            wheelMesh.localEulerAngles = new Vector3(wheelMesh.localEulerAngles.x, wheelCollider.steerAngle - wheelMesh.localEulerAngles.z, wheelMesh.localEulerAngles.z);
+        if (wheelMesh != null)
+        {
+            startingLocalRotation = wheelMesh.localRotation;
         }
-        wheelMesh.Rotate(wheelCollider.rpm / 60 * 360 * Time.deltaTime, 0, 0);
+    }
+
+    private void LateUpdate()
+    {
+        if (wheelMesh == null)
+        {
+            return;
+        }
+
+        if (wheelMesh.name == "Wheel_FL" || wheelMesh.name == "Wheel_FR")
+        {
+            float steerAngle = wheelCollider != null ? wheelCollider.steerAngle : 0f;
+            wheelMesh.localRotation = Quaternion.Euler(0f, 90f + steerAngle, 0f);
+            return;
+        }
+
+        wheelMesh.localRotation = startingLocalRotation;
     }
 }
