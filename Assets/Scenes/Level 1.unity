@@ -4423,7 +4423,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 128}
+  m_AnchoredPosition: {x: 0, y: 213}
   m_SizeDelta: {x: 90, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &676836051
@@ -8048,7 +8048,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 154}
+  m_AnchoredPosition: {x: 0, y: 278}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1259922912
@@ -8104,7 +8104,7 @@ MonoBehaviour:
   player: {fileID: 456043216}
   cameraTransform: {fileID: 1738075552}
   navigationManager: {fileID: 2053267319}
-  distanceText: {fileID: 1731740876}
+  distanceText: {fileID: 676836051}
 --- !u!1 &1261250231
 GameObject:
   m_ObjectHideFlags: 0
@@ -10798,6 +10798,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Texts (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3217273176822470029, guid: d44e5299608b3d34c8aa06c616b68a9c, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 1260715531048141648, guid: 9a14a8a1184c5f14fbce3338ea4d7a35, type: 2}
+    - target: {fileID: 6696934055164961390, guid: d44e5299608b3d34c8aa06c616b68a9c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7304916672302885646, guid: d44e5299608b3d34c8aa06c616b68a9c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.80275
@@ -11785,17 +11793,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9097101323999314563, guid: 2e9cbcf956215164b9eb1e0f029703bd, type: 3}
   m_PrefabInstance: {fileID: 856201088}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1731740876 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7096270972074322061, guid: d44e5299608b3d34c8aa06c616b68a9c, type: 3}
-  m_PrefabInstance: {fileID: 1584140960}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1735902324
 PrefabInstance:
   m_ObjectHideFlags: 0
