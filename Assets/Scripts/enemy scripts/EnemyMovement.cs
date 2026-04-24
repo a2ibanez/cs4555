@@ -5,15 +5,19 @@ public class EnemyMovement : MonoBehaviour
 {
     public Transform player;
     public float chaseRadius = 8f;
+    public float stuckCheckDistance = 0.15f;
+    public float stuckRecoveryTime = 0.75f;
     private NavMeshAgent agent;
     private Animator animator;
     private bool isTouchingPlayer;
+    private Vector3 lastPosition;
+    private float stuckTimer;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        
+        lastPosition = transform.position;
 
     }
 
@@ -33,6 +37,7 @@ public class EnemyMovement : MonoBehaviour
             if (shouldChase)
             {
                 agent.SetDestination(player.position);
+                UpdateStuckRecovery();
 
                 if (direction != Vector3.zero)
                 {
@@ -46,6 +51,7 @@ public class EnemyMovement : MonoBehaviour
             }
             else
             {
+                stuckTimer = 0f;
                 agent.ResetPath();
             }
         }
@@ -55,6 +61,7 @@ public class EnemyMovement : MonoBehaviour
         && agent.remainingDistance > agent.stoppingDistance;
 
     animator.SetBool("isRunning", isMoving);
+    lastPosition = transform.position;
 
     }
 
@@ -79,5 +86,30 @@ public class EnemyMovement : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, chaseRadius);
+    }
+
+    private void UpdateStuckRecovery()
+    {
+        if (agent.pathPending || agent.remainingDistance <= agent.stoppingDistance + 0.1f)
+        {
+            stuckTimer = 0f;
+            return;
+        }
+
+        float movedDistance = Vector3.Distance(transform.position, lastPosition);
+        if (movedDistance <= stuckCheckDistance && agent.velocity.sqrMagnitude < 0.01f)
+        {
+            stuckTimer += Time.deltaTime;
+            if (stuckTimer >= stuckRecoveryTime)
+            {
+                agent.ResetPath();
+                agent.SetDestination(player.position);
+                stuckTimer = 0f;
+            }
+        }
+        else
+        {
+            stuckTimer = 0f;
+        }
     }
 }

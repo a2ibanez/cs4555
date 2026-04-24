@@ -8,16 +8,18 @@ TagManager:
   - Vehicle
   - player
   - Package
+  - Barrier
+  - Moving Car
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - HeldPackage
-  - 
-  - 
+  - Moving Car
+  - Barrier
   - 
   - 
   - 
