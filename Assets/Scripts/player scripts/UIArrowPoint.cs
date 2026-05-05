@@ -7,10 +7,13 @@ public class UIArrowPoint : MonoBehaviour
     public Transform cameraTransform;
     public NavigationManager navigationManager;
     public TMPro.TextMeshProUGUI distanceText;
+    public Transform ArrowImage;
 
     // Update is called once per frame
     void Update()
     {
+        if (navigationManager == null || player == null || distanceText == null || ArrowImage == null)
+            return;
 
         if (navigationManager.currentTarget == null)
         {
@@ -25,16 +28,12 @@ public class UIArrowPoint : MonoBehaviour
         distanceText.text = Mathf.Round(distance) + "m";
 
         Transform directionReference = cameraTransform != null ? cameraTransform : Camera.main?.transform;
-        if (directionReference == null)
-        {
-            return;
-        }
+        if (directionReference == null) { return; }
 
         Vector3 cameraForward = directionReference.forward;
         cameraForward.y = 0f;
 
         float signedAngle = Vector3.SignedAngle(cameraForward, direction, Vector3.up);
 
-        transform.localRotation = Quaternion.Euler(0f, 0f, -signedAngle + 180f);
-    }
+        ArrowImage.localRotation = Quaternion.Euler(0f, 0f, -signedAngle + 180f);    }
 }

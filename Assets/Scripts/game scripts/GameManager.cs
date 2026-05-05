@@ -5,8 +5,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    public TextMeshProUGUI gameOverText;
-    public TextMeshProUGUI victoryText;
+    public GameObject gameOverPanel;
+    public GameObject victoryPanel;
 
     public int winCondition = 4;
 
@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
 
-        gameOverText.gameObject.SetActive(false);
-        victoryText.gameObject.SetActive(false);
+        gameOverPanel.SetActive(false);
+        victoryPanel.SetActive(false);
     }
 
     public void GameOver()
@@ -26,9 +26,8 @@ public class GameManager : MonoBehaviour
 
         gameEnded = true;
 
-        gameOverText.gameObject.SetActive(true);
-
-        Time.timeScale = 0f; // freeze game
+        gameOverPanel.SetActive(true);
+        Time.timeScale = 0f;
 
         UnlockCursor();
     }
@@ -41,8 +40,7 @@ public class GameManager : MonoBehaviour
         {
             gameEnded = true;
 
-            victoryText.gameObject.SetActive(true);
-
+            victoryPanel.SetActive(true);
             Time.timeScale = 0f;
 
             UnlockCursor();
