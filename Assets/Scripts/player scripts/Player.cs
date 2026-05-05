@@ -2,22 +2,34 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using System.Reflection;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
     public Rigidbody body;
     public WheelCollider frontRightWheel, frontLeftWheel, rearRightWheel, rearLeftWheel;
     public float driveSpeed, steerSpeed, speedLimit, brakeSpeed;
+    public Animator animator;
+    public HeadbuttHitbox headbuttHitbox;
+    public float headbuttHitTime = 0.35f;
+    public float headbuttActiveTime = 0.15f;
+    public float headbuttCooldown = 0.8f;
+    public float resetLiftHeight = 1f;
+    public float resetCooldown = 2f;
     private int health;
     public TextMeshProUGUI healthText;
 
     InputAction moveAction;
     InputAction brakeInput;
     InputAction toggleCursorAction;
+    InputAction attackInput;
+    InputAction resetPositionInput;
 
     float steerInput, driveInput;
 
     private bool isCursorLocked = true;
+    private bool isAttacking;
+    private float nextResetTime;
 
     private void Start()
     {
@@ -27,6 +39,25 @@ public class Player : MonoBehaviour
         brakeInput = InputSystem.actions.FindAction("Crouch");
 
         toggleCursorAction = InputSystem.actions.FindAction("ToggleCursor");
+        attackInput = new InputAction("Headbutt", binding: "<Mouse>/leftButton");
+        attackInput.Enable();
+        resetPositionInput = new InputAction("ResetPosition", binding: "<Keyboard>/r");
+        resetPositionInput.Enable();
+
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
+        if (headbuttHitbox == null)
+        {
+            headbuttHitbox = GetComponentInChildren<HeadbuttHitbox>(true);
+        }
+
+        if (headbuttHitbox != null)
+        {
+            headbuttHitbox.DisableHitbox();
+        }
 
         health = 10;
         setHealthText();
@@ -50,10 +81,35 @@ public class Player : MonoBehaviour
 
         if (!isCursorLocked) return;
 
+        if (attackInput != null && attackInput.triggered)
+        {
+            StartHeadbutt();
+        }
+
+        if (resetPositionInput != null && resetPositionInput.triggered)
+        {
+            ResetPosition();
+        }
+
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
         steerInput = moveInput.x;
         driveInput = moveInput.y;
         
+    }
+
+    private void OnDestroy()
+    {
+        if (attackInput != null)
+        {
+            attackInput.Disable();
+            attackInput.Dispose();
+        }
+
+        if (resetPositionInput != null)
+        {
+            resetPositionInput.Disable();
+            resetPositionInput.Dispose();
+        }
     }
 
     void FixedUpdate()
@@ -105,8 +161,75 @@ public class Player : MonoBehaviour
         frontLeftWheel.steerAngle = steerSpeed * steerInput;
     }
 
+    private void ResetPosition()
+    {
+        if (Time.time < nextResetTime)
+        {
+            return;
+        }
+
+        nextResetTime = Time.time + resetCooldown;
+
+        if (body != null)
+        {
+            body.linearVelocity = Vector3.zero;
+            body.angularVelocity = Vector3.zero;
+        }
+
+        Vector3 position = transform.position;
+        position.y += resetLiftHeight;
+        transform.position = position;
+
+        float currentYaw = transform.eulerAngles.y;
+        transform.rotation = Quaternion.Euler(0f, currentYaw, 0f);
+    }
+
+    private void StartHeadbutt()
+    {
+        if (isAttacking)
+        {
+            return;
+        }
+
+        StartCoroutine(HeadbuttRoutine());
+    }
+
+    private IEnumerator HeadbuttRoutine()
+    {
+        isAttacking = true;
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Headbutt");
+        }
+
+        yield return new WaitForSeconds(headbuttHitTime);
+
+        if (headbuttHitbox != null)
+        {
+            headbuttHitbox.EnableHitbox();
+        }
+
+        yield return new WaitForSeconds(headbuttActiveTime);
+
+        if (headbuttHitbox != null)
+        {
+            headbuttHitbox.DisableHitbox();
+        }
+
+        yield return new WaitForSeconds(Mathf.Max(0f, headbuttCooldown - headbuttHitTime - headbuttActiveTime));
+
+        isAttacking = false;
+    }
+
     private void OnCollisionEnter(Collision collision){
         if(collision.gameObject.CompareTag("enemy")){
+            EnemyMovement enemy = collision.gameObject.GetComponentInParent<EnemyMovement>();
+            if (enemy != null && enemy.IsStunned)
+            {
+                return;
+            }
+
             health--;
             setHealthText();
         }

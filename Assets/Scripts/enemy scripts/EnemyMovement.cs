@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -7,16 +8,36 @@ public class EnemyMovement : MonoBehaviour
     public float chaseRadius = 8f;
     public float stuckCheckDistance = 0.15f;
     public float stuckRecoveryTime = 0.75f;
+    public float dazedSpinSpeed = 720f;
+    public ParticleSystem headbuttParticles;
     private NavMeshAgent agent;
     private Animator animator;
+    private Rigidbody enemyRigidbody;
     private bool isTouchingPlayer;
+    private bool isStunned;
     private Vector3 lastPosition;
     private float stuckTimer;
+    private Coroutine stunCoroutine;
+    private RigidbodyConstraints originalConstraints;
+    private bool originalIsKinematic;
+
+    public bool IsStunned
+    {
+        get { return isStunned; }
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        enemyRigidbody = GetComponent<Rigidbody>();
+
+        if (enemyRigidbody != null)
+        {
+            originalConstraints = enemyRigidbody.constraints;
+            originalIsKinematic = enemyRigidbody.isKinematic;
+        }
+
         lastPosition = transform.position;
 
     }
@@ -24,6 +45,16 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isStunned)
+        {
+            if (animator != null)
+            {
+                animator.SetBool("isRunning", false);
+            }
+
+            return;
+        }
+
         if (player != null)
         {
             Vector3 direction = player.position - transform.position;
@@ -60,7 +91,11 @@ public class EnemyMovement : MonoBehaviour
         && agent.velocity.magnitude > 0.1f
         && agent.remainingDistance > agent.stoppingDistance;
 
-    animator.SetBool("isRunning", isMoving);
+    if (animator != null)
+    {
+        animator.SetBool("isRunning", isMoving);
+    }
+
     lastPosition = transform.position;
 
     }
@@ -70,7 +105,10 @@ public class EnemyMovement : MonoBehaviour
             print("hit");
             isTouchingPlayer = true;
             agent.isStopped = true;
-            animator.SetBool("isRunning", false);
+            if (animator != null)
+            {
+                animator.SetBool("isRunning", false);
+            }
         }
         
     }
@@ -111,5 +149,77 @@ public class EnemyMovement : MonoBehaviour
         {
             stuckTimer = 0f;
         }
+    }
+
+    public void Stun(float duration)
+    {
+        if (stunCoroutine != null)
+        {
+            StopCoroutine(stunCoroutine);
+        }
+
+        stunCoroutine = StartCoroutine(StunRoutine(duration));
+    }
+
+    private IEnumerator StunRoutine(float duration)
+    {
+        isStunned = true;
+        isTouchingPlayer = false;
+        stuckTimer = 0f;
+
+        if (enemyRigidbody != null)
+        {
+            enemyRigidbody.linearVelocity = Vector3.zero;
+            enemyRigidbody.angularVelocity = Vector3.zero;
+            enemyRigidbody.constraints =
+                RigidbodyConstraints.FreezePositionX |
+                RigidbodyConstraints.FreezePositionY |
+                RigidbodyConstraints.FreezePositionZ |
+                RigidbodyConstraints.FreezeRotationX |
+                RigidbodyConstraints.FreezeRotationZ;
+            enemyRigidbody.isKinematic = true;
+        }
+
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
+        }
+
+        if (animator != null)
+        {
+            animator.SetBool("isRunning", false);
+        }
+
+        if (headbuttParticles != null)
+        {
+            headbuttParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            headbuttParticles.Play();
+        }
+
+        float stunTimer = 0f;
+        while (stunTimer < duration)
+        {
+            Vector3 eulerAngles = transform.eulerAngles;
+            transform.rotation = Quaternion.Euler(0f, eulerAngles.y, 0f);
+            transform.Rotate(Vector3.up, dazedSpinSpeed * Time.deltaTime, Space.World);
+
+            stunTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        Vector3 finalEulerAngles = transform.eulerAngles;
+        transform.rotation = Quaternion.Euler(0f, finalEulerAngles.y, 0f);
+
+        if (enemyRigidbody != null)
+        {
+            enemyRigidbody.isKinematic = originalIsKinematic;
+            enemyRigidbody.constraints = originalConstraints;
+            enemyRigidbody.linearVelocity = Vector3.zero;
+            enemyRigidbody.angularVelocity = Vector3.zero;
+        }
+
+        isStunned = false;
+        stunCoroutine = null;
     }
 }
