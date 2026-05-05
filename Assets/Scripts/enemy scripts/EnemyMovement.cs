@@ -180,7 +180,7 @@ public class EnemyMovement : MonoBehaviour
             enemyRigidbody.isKinematic = true;
         }
 
-        if (agent != null)
+        if (agent != null && agent.enabled && agent.isOnNavMesh)
         {
             agent.isStopped = true;
             agent.ResetPath();

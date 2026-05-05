@@ -8646,7 +8646,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Health: 10'
+  m_text: Press 'Q' to pick up
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9a14a8a1184c5f14fbce3338ea4d7a35, type: 2}
   m_sharedMaterial: {fileID: 1260715531048141648, guid: 9a14a8a1184c5f14fbce3338ea4d7a35, type: 2}
@@ -15507,7 +15507,7 @@ MonoBehaviour:
   dropGroundLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  pickUpPrompt: {fileID: 0}
+  pickUpPrompt: {fileID: 1037939732}
   navigationManager: {fileID: 0}
 --- !u!135 &1674389564
 SphereCollider:
