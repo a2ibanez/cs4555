@@ -9,9 +9,16 @@ public class UIArrowPoint : MonoBehaviour
     public TMPro.TextMeshProUGUI distanceText;
     public Transform ArrowImage;
 
+    void Awake()
+    {
+        ResolveMissingReferences();
+    }
+
     // Update is called once per frame
     void Update()
     {
+        ResolveMissingReferences();
+
         if (navigationManager == null || player == null || distanceText == null || ArrowImage == null)
             return;
 
@@ -35,5 +42,28 @@ public class UIArrowPoint : MonoBehaviour
 
         float signedAngle = Vector3.SignedAngle(cameraForward, direction, Vector3.up);
 
-        ArrowImage.localRotation = Quaternion.Euler(0f, 0f, -signedAngle + 180f);    }
+        ArrowImage.localRotation = Quaternion.Euler(0f, 0f, -signedAngle + 180f);
+    }
+
+    void ResolveMissingReferences()
+    {
+        if (player == null)
+        {
+            Player activePlayer = FindFirstObjectByType<Player>();
+            if (activePlayer != null)
+            {
+                player = activePlayer.transform;
+            }
+        }
+
+        if (navigationManager == null)
+        {
+            navigationManager = FindFirstObjectByType<NavigationManager>();
+        }
+
+        if (ArrowImage == null)
+        {
+            ArrowImage = transform;
+        }
+    }
 }

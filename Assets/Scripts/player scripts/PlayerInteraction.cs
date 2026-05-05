@@ -109,26 +109,28 @@ public class PlayerInteraction : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Package"))
+        Package package = other.GetComponent<Package>();
+        if (package != null)
         {
             if (currentPackage != null)
             {
                 return;
             }
 
-            nearbyPackage = other.gameObject;
+            nearbyPackage = package.gameObject;
             UpdatePickUpPrompt();
 
             if (navigationManager != null)
             {
-                navigationManager.SetPackageTarget(other.gameObject);
+                navigationManager.SetPackageTarget(nearbyPackage);
             }
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Package"))
+        Package package = other.GetComponent<Package>();
+        if (package != null && nearbyPackage == package.gameObject)
         {
             nearbyPackage = null;
             UpdatePickUpPrompt();

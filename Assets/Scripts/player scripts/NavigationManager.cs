@@ -46,25 +46,24 @@ public class NavigationManager : MonoBehaviour
 
     GameObject FindNearestPackage()
     {
-        GameObject[] packages = GameObject.FindGameObjectsWithTag("Package");
-
         GameObject nearest = null;
         float shortestDistance = Mathf.Infinity;
 
-        foreach (GameObject package in packages)
+        foreach (Package package in FindObjectsByType<Package>(FindObjectsSortMode.None))
         {
-            if (package == null || !package.activeInHierarchy)
+            if (package == null || !package.gameObject.activeInHierarchy)
                 continue;
 
+            GameObject packageObject = package.gameObject;
             float distance = Vector3.Distance(
                 playerInteraction.transform.position,
-                package.transform.position
+                packageObject.transform.position
             );
 
             if (distance < shortestDistance)
             {
                 shortestDistance = distance;
-                nearest = package;
+                nearest = packageObject;
             }
         }
 
