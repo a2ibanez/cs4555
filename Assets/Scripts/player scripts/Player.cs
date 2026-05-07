@@ -230,15 +230,21 @@ public class Player : MonoBehaviour
                 return;
             }
 
-            health--;
-            setHealthText();
+            dealDamage(1);
         }
 
         if(collision.gameObject.CompareTag("Vehicle")){
-            health-=3;
-            setHealthText();
+            dealDamage(3);
         }
         
+    }
+
+    private void dealDamage(int damage){
+        health -= damage;
+        if (health < 0){
+            health = 0;
+        }
+        setHealthText();
     }
 
     private void setHealthText(){
